@@ -1,7 +1,7 @@
-From 7008586ba32247fd6caec61c4203df1814093a0f Mon Sep 17 00:00:00 2001
+From 6d782f713024609de37628ab72f4f5ef37108238 Mon Sep 17 00:00:00 2001
 From: KO Myung-Hun <komh@chollian.net>
 Date: Mon, 22 Oct 2012 18:13:06 +0900
-Subject: [PATCH 02/20] kva: workaround stays-on-top of Qt 4.7.3GA for OS/2
+Subject: [PATCH 2/4] kva: workaround stays-on-top of Qt 4.7.3GA for OS/2
 
 Qt::WindowStaysOnTopHint does not work on Qt 4.7.3GA for OS/2.
 ---
@@ -9,7 +9,7 @@ Qt::WindowStaysOnTopHint does not work on Qt 4.7.3GA for OS/2.
  1 file changed, 85 insertions(+), 5 deletions(-)
 
 diff --git a/modules/video_output/kva.c b/modules/video_output/kva.c
-index 15acb1a5fb..659272f2c7 100644
+index fc4600998b..b2e1c997c9 100644
 --- a/modules/video_output/kva.c
 +++ b/modules/video_output/kva.c
 @@ -75,6 +75,15 @@ vlc_module_begin ()
@@ -28,7 +28,7 @@ index 15acb1a5fb..659272f2c7 100644
  /*****************************************************************************
   * vout_display_sys_t: video output method descriptor
   *****************************************************************************
-@@ -103,6 +112,9 @@ struct vout_display_sys_t
+@@ -104,6 +113,9 @@ struct vout_display_sys_t
      unsigned           button_pressed;
      bool               is_mouse_hidden;
      bool               is_on_top;
@@ -38,7 +38,7 @@ index 15acb1a5fb..659272f2c7 100644
  };
  
  struct picture_sys_t
-@@ -216,7 +228,7 @@ static void PMThread( void *arg )
+@@ -228,7 +240,7 @@ static void PMThread( void *arg )
  
      WinSetWindowPtr( sys->client, 0, vd );
  
@@ -47,7 +47,7 @@ index 15acb1a5fb..659272f2c7 100644
      {
          WinSetWindowPtr( sys->frame, 0, vd );
          sys->p_old_frame = WinSubclassWindow( sys->frame, MyFrameWndProc );
-@@ -277,13 +289,17 @@ static void PMThread( void *arg )
+@@ -294,13 +306,17 @@ static void PMThread( void *arg )
      sys->i_result = VLC_SUCCESS;
      DosPostEventSem( sys->ack_event );
  
@@ -67,7 +67,7 @@ index 15acb1a5fb..659272f2c7 100644
          WinSetVisibleRegionNotify( sys->frame, FALSE );
  
      kvaEnableScreenSaver();
-@@ -296,7 +312,7 @@ exit_open_display :
+@@ -313,7 +329,7 @@ exit_open_display :
      kvaDone();
  
  exit_kva_init :
@@ -76,7 +76,7 @@ index 15acb1a5fb..659272f2c7 100644
          WinSubclassWindow( sys->frame, sys->p_old_frame );
  
      WinDestroyWindow( sys->frame );
-@@ -919,7 +935,71 @@ static MRESULT EXPENTRY MyFrameWndProc( HWND hwnd, ULONG msg, MPARAM mp1,
+@@ -961,7 +977,71 @@ static MRESULT EXPENTRY MyFrameWndProc( HWND hwnd, ULONG msg, MPARAM mp1,
          //case WM_VRNDISABLED :
          case WM_VRNENABLED :
              if( !vd->cfg->is_fullscreen && sys->is_on_top )

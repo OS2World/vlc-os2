@@ -1,4 +1,4 @@
-From 7008586ba32247fd6caec61c4203df1814093a0f Mon Sep 17 00:00:00 2001
+From 0a77793712821103c7bcf6bf7a40d3a02ae540b3 Mon Sep 17 00:00:00 2001
 From: KO Myung-Hun <komh@chollian.net>
 Date: Mon, 22 Oct 2012 18:13:06 +0900
 Subject: [PATCH 02/20] kva: workaround stays-on-top of Qt 4.7.3GA for OS/2
