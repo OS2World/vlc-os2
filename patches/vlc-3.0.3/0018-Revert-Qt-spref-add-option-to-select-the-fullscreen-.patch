@@ -1,20 +1,20 @@
-From 33614e294a9e77d6a7a0224590e4ef2e6e94bd2b Mon Sep 17 00:00:00 2001
+From ad92db7e6e368e8d81c9c39648b6f72bbe65bee4 Mon Sep 17 00:00:00 2001
 From: KO Myung-Hun <komh@chollian.net>
-Date: Mon, 1 Jan 2018 23:11:55 +0900
-Subject: [PATCH 18/24] Revert "Qt: spref, add option to select the fullscreen
+Date: Tue, 2 Jan 2018 18:05:18 +0900
+Subject: [PATCH 18/25] Revert "Qt: spref, add option to select the fullscreen
  screen"
 
-This reverts commit 326c9c13d024670ce80fc233013738ce511813eb.
+This reverts commit 40e152db5e09f433bb17b848d4bca09d522d1aca.
 ---
- modules/gui/qt/components/simple_preferences.cpp | 19 -------------
+ modules/gui/qt/components/simple_preferences.cpp | 26 -----------------
  modules/gui/qt/ui/sprefs_video.ui                | 36 ++++++++----------------
- 2 files changed, 11 insertions(+), 44 deletions(-)
+ 2 files changed, 11 insertions(+), 51 deletions(-)
 
 diff --git a/modules/gui/qt/components/simple_preferences.cpp b/modules/gui/qt/components/simple_preferences.cpp
-index ecfa1dbb02..66206c9adf 100644
+index 8321cbae43..6090aa9baf 100644
 --- a/modules/gui/qt/components/simple_preferences.cpp
 +++ b/modules/gui/qt/components/simple_preferences.cpp
-@@ -45,7 +45,6 @@
+@@ -42,7 +42,6 @@
  
  #include <QStyleFactory>
  #include <QSettings>
@@ -22,7 +22,7 @@ index ecfa1dbb02..66206c9adf 100644
  #include <QtAlgorithms>
  #include <QDir>
  #include <assert.h>
-@@ -360,24 +359,6 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
+@@ -363,24 +362,6 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
              CONFIG_BOOL( "video-deco", windowDecorations );
              CONFIG_GENERIC( "vout", StringList, ui.voutLabel, outputModule );
  
@@ -47,6 +47,20 @@ index ecfa1dbb02..66206c9adf 100644
  #ifdef _WIN32
              CONFIG_BOOL( "directx-overlay", overlay );
              CONFIG_BOOL( "directx-hw-yuv", hwYUVBox );
+@@ -1065,13 +1046,6 @@ void SPrefsPanel::apply()
+         break;
+     }
+ 
+-    case SPrefsVideo:
+-    {
+-        int i_fullscreenScreen =  qobject_cast<QComboBox *>(optionWidgets["fullscreenScreenB"])->currentData().toInt();
+-        config_PutInt( p_intf, "qt-fullscreen-screennumber", i_fullscreenScreen );
+-        break;
+-    }
+-
+     case SPrefsAudio:
+     {
+         bool b_checked =
 diff --git a/modules/gui/qt/ui/sprefs_video.ui b/modules/gui/qt/ui/sprefs_video.ui
 index 899faeca60..766f747c2e 100644
 --- a/modules/gui/qt/ui/sprefs_video.ui
