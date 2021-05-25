@@ -1,7 +1,7 @@
-From 1098c0b7d50e132c38d8210eb946954d4b863553 Mon Sep 17 00:00:00 2001
+From d157fd359bf2dced3873b3d135fe4d146aac1ff0 Mon Sep 17 00:00:00 2001
 From: KO Myung-Hun <komh@chollian.net>
 Date: Tue, 1 Mar 2016 20:11:06 +0900
-Subject: [PATCH 3/3] os2: use ExceptQ to ease debugging
+Subject: [PATCH 03/28] os2: use ExceptQ to ease debugging
 
 ---
  bin/vlc.c        | 18 ++++++++++++++++++
@@ -9,7 +9,7 @@ Subject: [PATCH 3/3] os2: use ExceptQ to ease debugging
  2 files changed, 31 insertions(+)
 
 diff --git a/bin/vlc.c b/bin/vlc.c
-index d7834c9614..4b8d45a8ca 100644
+index 72e0eee428..eac375e0bf 100644
 --- a/bin/vlc.c
 +++ b/bin/vlc.c
 @@ -109,11 +109,26 @@ static void exit_timeout (int signum)
@@ -27,7 +27,7 @@ index d7834c9614..4b8d45a8ca 100644
  /*****************************************************************************
   * main: parse command line, start interface and spawn threads.
   *****************************************************************************/
- int main(int argc, const char *argv[])
+ int main( int i_argc, const char *ppsz_argv[] )
  {
 +#ifdef __OS2__
 +    EXCEPTIONREGISTRATIONRECORD xcptRegRec;
@@ -39,10 +39,10 @@ index d7834c9614..4b8d45a8ca 100644
      /* The so-called POSIX-compliant MacOS X reportedly processes SIGPIPE even
       * if it is blocked in all thread.
       * Note: this is NOT an excuse for not protecting against SIGPIPE. If
-@@ -274,6 +289,9 @@ out:
+@@ -276,6 +291,9 @@ out:
  #ifdef __OS2__
-     for (int i = count - argc + 1; i < count; i++)
-         free(args[i]);
+     for (int i = argc - i_argc; i < argc; i++)
+         free (argv[i]);
 +
 +    if (fLoaded)
 +        UninstallExceptq (&xcptRegRec);
@@ -50,11 +50,11 @@ index d7834c9614..4b8d45a8ca 100644
      return ret;
  }
 diff --git a/src/os2/thread.c b/src/os2/thread.c
-index fba569c6f0..be4a08b4e2 100644
+index 20f7ccd79c..97a476c822 100644
 --- a/src/os2/thread.c
 +++ b/src/os2/thread.c
-@@ -431,13 +431,26 @@ retry:
-     vlc_mutex_unlock (&super_mutex);
+@@ -534,13 +534,26 @@ retry:
+     }
  }
  
 +#define INCL_LIBLOADEXCEPTQ
